@@ -1,9 +1,8 @@
 import os
 import time
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
 from selenium import webdriver
+import geckodriver_autoinstaller
+from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -28,7 +27,10 @@ class ReservarCitas:
         CITA_URL = 'https://cita.consuladoperumadrid.org/qmaticwebbooking/#/'
 
         # Set up the web driver
-        driver = webdriver.Chrome()
+        options = Options()
+        geckodriver_autoinstaller.install()
+        options.log.level = "trace"
+        driver = webdriver.Firefox()
 
         # Navigate to the appointment booking page
         driver.get(CITA_URL)
@@ -92,7 +94,7 @@ class ReservarCitas:
                 telegram_data = {
                 "chat_id": self.telegram_chat_id,
                 "parse_mode": "HTML",
-                "text": ("<b>Hay citas!</b>\nHay cita en el Consulado Peruano para el"f"{appointment_date}""en la oficina de "f'{appointment_location}')
+                "text": ("<b>Hay citas!</b>\nHay cita en el Consulado Peruano para el<b>"f"{appointment_date}"'<b>a las<b>'f'{appointment_time}'"<b>en la oficina de<b>"f'{appointment_location}''.\n<b>Número de confirmación<b>'f'{confirmation_number}')
                 }
                 requests.post('https://api.telegram.org/bot'f'{self.telegram_bot_token}/sendmessage', data=telegram_data)
                 print('Dates found!')

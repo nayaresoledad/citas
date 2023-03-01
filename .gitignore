@@ -1,2 +1,5 @@
 /citas/
 .env
+geckodriver.log
+instruccionesfirefox.txt
+__pycache__/
